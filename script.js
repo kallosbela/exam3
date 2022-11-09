@@ -9,11 +9,13 @@ const showExtraInfo = (person) => (event) => {
   console.log(extraDiv);
   console.log(person);
   if (extraDiv.innerHTML === "") {
+    event.target.innerText = "Show less"
     extraDiv.innerHTML = `
       <p>Rank:\ ${person.type}</p>
       <p>Admin:\ ${person.site_admin}</p>
     `;
   } else {
+    event.target.innerText = "Show more"
     extraDiv.innerHTML = "";
   }
 };
@@ -22,15 +24,29 @@ const showExtraInfo = (person) => (event) => {
 const search = (cards) => (event) => {
   const searchText = String(event.target.value)
   console.log(searchText)
-  let newCards = cards.filter((card)=>String(card).includes(searchText))
+  if (searchText === "") {
+    loading.innerHTML = "<strong>Loading...<strong>"
+    root.innerHTML = ""
+    loadData()
+  } else {
+  let newCards = cards.filter((card)=>{
+    const index = String(card).indexOf("<span>") + 6 //login begins from here
+    return card.slice(index,index+searchText.length) === searchText
+  })
+  console.log("newCards",newCards);
   if (newCards.length === 0) {
     root.innerHTML = "<h1>Nothing found</h1>"
   } else {
-  root.innerHTML = newCards.join("");
-  }
-  
+    root.innerHTML = newCards.join("");
+    for (const person of data) {
+      showButton = document.getElementById(`show${person.id}`);
+      if (showButton !== null) {     // enélkül miért nem működik a listener...?
+      console.log(showButton);
+      showButton.addEventListener("click", showExtraInfo(person));
+      }
+    }
+  }}
 }
-
 
 // loading starts...
 setTimeout(loadData, 1000);
@@ -59,7 +75,7 @@ async function loadData() {
   }
 
   const searchButton = document.getElementById("search")
-  searchButton.addEventListener("change",search(cards))
+  searchButton.addEventListener("input",search(cards))
 }
 
 
