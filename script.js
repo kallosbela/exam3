@@ -52,7 +52,7 @@ const search = (cards) => (event) => {
 setTimeout(loadData, 1000);
 
 async function loadData() {
-  let response = await fetch("http://api.github.com/users");
+  let response = await fetch("https://api.github.com/users");
   data = await response.json();
 
   console.log(data);
